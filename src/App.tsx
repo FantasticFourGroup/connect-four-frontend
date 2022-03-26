@@ -3,6 +3,7 @@ import { Button } from "@mui/material";
 import { Box } from "@mui/system";
 import ValuesModel, { Player } from "./ModelValues";
 import Grid from "./Grid";
+import "./App.css";
 
 function App() {
   const [selected, setSelected] = useState({} as ValuesModel);
