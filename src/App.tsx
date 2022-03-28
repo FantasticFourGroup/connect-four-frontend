@@ -29,27 +29,25 @@ function App() {
   const [aiHasMoved, setAiHasMoved] = useState(true);
 
   function move(col: number) {
-    if (aiHasMoved) {
-      Promise.resolve(setGrid(makeGridValues(col, 1, grid)))
-        .then(() => {
-          setAiHasMoved(false);
-        })
-        .then(() =>
-          fetch(`https://connect-four-backend.onrender.com/solve-board`, {
-            method: "POST", // or 'PUT'
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              grid,
-              depth: 4,
-              turn: 2,
-            }),
-          })
-        )
+    if (aiHasMoved && grid[0][col] <= 0) {
+      const newGrid = makeGridValues(col, 1, grid);
+      setGrid(newGrid);
+      setAiHasMoved(false);
+
+      fetch(`https://connect-four-backend.onrender.com/solve-board`, {
+        method: "POST", // or 'PUT'
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          grid: newGrid,
+          depth: 4,
+          turn: 2,
+        }),
+      })
         .then((response) => response.json())
         .then((aiMove) => {
-          setGrid(makeGridValues(aiMove, 2, grid));
+          setGrid(makeGridValues(aiMove, 2, newGrid));
         })
         .then(() => {
           setAiHasMoved(true);

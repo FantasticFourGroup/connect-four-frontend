@@ -25,7 +25,7 @@ export default function Cell({ row, col, onClick, grid: values }: CellProps) {
         height: "70px",
         width: "70px",
         padding: "0px",
-        cursor: "pointer",
+        cursor: values[0][col] <= 0 ? "pointer" : "default",
       }}
       onClick={() => {
         onClick(col);
