@@ -1,44 +1,37 @@
 import React from "react";
 import TableCell from "@mui/material/TableCell";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
-import ValuesModel, { Player } from "./ModelValues";
 
 interface CellProps {
-  id: number;
-  values: ValuesModel;
-  onClick: (id: number) => void;
+  row: number;
+  col: number;
+  grid: Array<number[]>;
+  onClick: (col: number) => void;
 }
 
-const colors = {
-  AI: "red",
-  HUM: "blue",
+const colors: { [key: number]: string } = {
+  0: "transparent",
+  1: "blue",
+  2: "red",
 };
 
-function getColor(value: Player) {
-  return value ? colors[value] : "transparent";
-}
-
-export default function Cell({ id, onClick: setValues, values }: CellProps) {
-  const player = values[id];
+export default function Cell({ row, col, onClick, grid: values }: CellProps) {
+  const player = values[row][col];
   return (
     <TableCell
-      id={id.toString()}
       align="center"
       sx={{
         border: "solid",
         height: "70px",
         width: "70px",
         padding: "0px",
-        cursor: !!player ? "curser" : "pointer",
+        cursor: "pointer",
       }}
-      onClick={(e) => {
-        if (!player) {
-          setValues(id);
-          console.log(e.currentTarget.id);
-        }
+      onClick={() => {
+        onClick(col);
       }}
     >
-      <FiberManualRecordIcon sx={{ fontSize: 50, color: getColor(player) }} />
+      <FiberManualRecordIcon sx={{ fontSize: 50, color: colors[player] }} />
     </TableCell>
   );
 }

@@ -7,9 +7,8 @@ import {
   Paper,
 } from "@mui/material";
 import Cell from "./Cell";
-import ValuesModel from "./ModelValues";
 
-function makeCellsRows(count: number, { selected, onClick }: GridProps) {
+function makeCellsRows(count: number, { grid: selected, onClick }: GridProps) {
   return Array(count)
     .fill(undefined)
     .map((_, i) => (
@@ -17,10 +16,14 @@ function makeCellsRows(count: number, { selected, onClick }: GridProps) {
         {Array(7)
           .fill(undefined)
           .map((_, j) => {
-            const id = i * 7 + j + 1;
-            /** "i * 7" so that the id will be sequencial every row "j + 1" since the indexc start at 0*/
             return (
-              <Cell id={id} onClick={onClick} values={selected} key={id} />
+              <Cell
+                col={j}
+                row={i}
+                onClick={onClick}
+                grid={selected}
+                key={j + i}
+              />
             );
           })}
       </TableRow>
@@ -28,18 +31,18 @@ function makeCellsRows(count: number, { selected, onClick }: GridProps) {
 }
 
 interface GridProps {
-  selected: ValuesModel;
-  onClick: (id: number) => void;
+  grid: Array<number[]>;
+  onClick: (col: number) => void;
 }
 
-export default function Grid({ selected, onClick }: GridProps) {
+export default function Grid({ grid, onClick }: GridProps) {
   return (
     <TableContainer
       component={Paper}
       sx={{ padding: "30px", width: "60%", height: "60%" }}
     >
       <Table>
-        <TableBody>{makeCellsRows(6, { selected, onClick })}</TableBody>
+        <TableBody>{makeCellsRows(6, { grid: grid, onClick })}</TableBody>
       </Table>
     </TableContainer>
   );

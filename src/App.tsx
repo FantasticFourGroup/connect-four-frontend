@@ -1,17 +1,61 @@
 import React, { useState } from "react";
 import { Button } from "@mui/material";
 import { Box } from "@mui/system";
-import ValuesModel, { Player } from "./ModelValues";
 import Grid from "./Grid";
 import "./App.css";
 
-function App() {
-  const [selected, setSelected] = useState({} as ValuesModel);
-  const [turn, setTurn] = useState("HUM" as Player);
+type Player = 1 | 2;
 
-  function move(id: number) {
-    setSelected({ ...selected, [id]: turn });
-    setTurn(turn === "HUM" ? "AI" : "HUM");
+function makeGridValues(col: number, player: Player, grid: Array<number[]>) {
+  const copy = grid.map((row) => [...row]);
+  for (let i = copy.length - 1; i >= 0; i--) {
+    if (copy[i][col] <= 0) {
+      copy[i][col] = player;
+      return copy;
+    }
+  }
+  return copy;
+}
+
+function App() {
+  const [grid, setGrid] = useState([
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+  ]);
+  const [aiHasMoved, setAiHasMoved] = useState(true);
+
+  function move(col: number) {
+    if (aiHasMoved) {
+      Promise.resolve(setGrid(makeGridValues(col, 1, grid)))
+        .then(() => {
+          setAiHasMoved(false);
+        })
+        .then(() =>
+          fetch(`https://connect-four-backend.onrender.com/solve-board`, {
+            method: "POST", // or 'PUT'
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              grid,
+              depth: 4,
+              turn: 2,
+            }),
+          })
+        )
+        .then((response) => response.json())
+        .then((aiMove) => {
+          setGrid(makeGridValues(aiMove, 2, grid));
+        })
+        .then(() => {
+          setAiHasMoved(true);
+        })
+        .catch((e) => console.log("error: ", e));
+    }
   }
 
   return (
@@ -28,8 +72,15 @@ function App() {
           variant="outlined"
           color="secondary"
           onClick={() => {
-            setSelected({});
-            setTurn("HUM");
+            setGrid([
+              [0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0],
+            ]);
+            setAiHasMoved(true);
           }}
         >
           Reset
@@ -41,7 +92,7 @@ function App() {
           justifyContent: "center",
         }}
       >
-        <Grid selected={selected} onClick={move} />
+        <Grid grid={grid} onClick={move} />
       </Box>
     </Box>
   );
