@@ -3,8 +3,12 @@ import { Button } from "@mui/material";
 import { Box } from "@mui/system";
 import Grid from "./Grid";
 import "./App.css";
+import { BackendResponse, GameStatus, Player } from "./Models";
+import ResultModal from "./ResultModal";
 
-type Player = 1 | 2;
+function colNotFull(col: number, grid: Array<number[]>) {
+  return grid[0][col] <= 0;
+}
 
 function makeGridValues(col: number, player: Player, grid: Array<number[]>) {
   const copy = grid.map((row) => [...row]);
@@ -26,13 +30,20 @@ function App() {
     [0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0],
   ]);
-  const [aiHasMoved, setAiHasMoved] = useState(true);
+  const [gameStatus, setGameStatus] = useState<GameStatus>({
+    aiHasMoved: true,
+    state: "Playing",
+  });
 
   function move(col: number) {
-    if (aiHasMoved && grid[0][col] <= 0) {
+    if (
+      gameStatus.aiHasMoved &&
+      colNotFull(col, grid) &&
+      gameStatus.state === "Playing"
+    ) {
       const newGrid = makeGridValues(col, 1, grid);
       setGrid(newGrid);
-      setAiHasMoved(false);
+      setGameStatus({ ...gameStatus, aiHasMoved: false });
 
       fetch(`https://connect-four-backend.onrender.com/solve-board`, {
         method: "POST", // or 'PUT'
@@ -46,18 +57,31 @@ function App() {
         }),
       })
         .then((response) => response.json())
-        .then((aiMove) => {
-          setGrid(makeGridValues(aiMove, 2, newGrid));
-        })
-        .then(() => {
-          setAiHasMoved(true);
+        .then((aiData: BackendResponse) => {
+          if (aiData.game_state !== "Win") {
+            setGrid(makeGridValues(aiData.choice, 2, newGrid));
+          }
+          setGameStatus({ aiHasMoved: true, state: aiData.game_state });
         })
         .catch((e) => console.log("error: ", e));
     }
   }
 
+  function reset() {
+    setGrid([
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0],
+    ]);
+    setGameStatus({ aiHasMoved: true, state: "Playing" });
+  }
+
   return (
     <Box>
+      <ResultModal gameState={gameStatus.state} reset={reset} />
       <Box
         sx={{
           display: "flex",
@@ -66,21 +90,7 @@ function App() {
           paddingTop: "30px",
         }}
       >
-        <Button
-          variant="outlined"
-          color="secondary"
-          onClick={() => {
-            setGrid([
-              [0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0],
-            ]);
-            setAiHasMoved(true);
-          }}
-        >
+        <Button variant="outlined" color="secondary" onClick={reset}>
           Reset
         </Button>
       </Box>
