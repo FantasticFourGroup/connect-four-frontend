@@ -113,7 +113,7 @@ function App() {
           display: "flex",
           justifyContent: "right",
           paddingRight: "30px",
-          paddingTop: "30px",
+          paddingTop: "5px",
         }}
       >
         <DepthSelector
@@ -129,7 +129,7 @@ function App() {
       </Box>
       <Box
         sx={{
-          paddingTop: "30px",
+          paddingTop: "5px",
           display: "flex",
           justifyContent: "center",
         }}

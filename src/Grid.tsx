@@ -5,6 +5,7 @@ import {
   TableContainer,
   TableRow,
   Paper,
+  Box,
 } from "@mui/material";
 import Cell from "./Cell";
 
@@ -44,18 +45,29 @@ interface GridProps {
 
 export default function Grid({ grid, onClick, progressCurser }: GridProps) {
   return (
-    <TableContainer
-      component={Paper}
+    <Box
       sx={{
         padding: "30px",
         width: "60%",
         height: "60%",
-        cursor: progressCurser ? "progress" : "pointer",
+        justifyContent: "center",
+        display: "flex",
       }}
     >
-      <Table>
-        <TableBody>{makeCellsRows(6, grid, onClick, progressCurser)}</TableBody>
-      </Table>
-    </TableContainer>
+      <TableContainer
+        component={Paper}
+        sx={{
+          padding: "30px",
+          width: "60%",
+          height: "60%",
+        }}
+      >
+        <Table>
+          <TableBody>
+            {makeCellsRows(6, grid, onClick, progressCurser)}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
   );
 }

@@ -1,7 +1,7 @@
 import React from "react";
 import TableCell from "@mui/material/TableCell";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
-import { Slide } from "@mui/material";
+import { Box, Slide } from "@mui/material";
 
 interface CellProps {
   row: number;
@@ -30,8 +30,6 @@ export default function Cell({
       align="center"
       sx={{
         border: "solid",
-        height: "70px",
-        width: "70px",
         padding: "0px",
         cursor: progressCurser
           ? "progress"
@@ -43,9 +41,17 @@ export default function Cell({
         onClick(col);
       }}
     >
-      <Slide direction="down" in={player > 0} mountOnEnter unmountOnExit>
-        <FiberManualRecordIcon sx={{ fontSize: 50, color: colors[player] }} />
-      </Slide>
+      <Box
+        sx={{
+          height: "55px",
+          width: "55px",
+          margin: "auto",
+        }}
+      >
+        <Slide direction="down" in={player > 0} mountOnEnter unmountOnExit>
+          <FiberManualRecordIcon sx={{ fontSize: 50, color: colors[player] }} />
+        </Slide>
+      </Box>
     </TableCell>
   );
 }
