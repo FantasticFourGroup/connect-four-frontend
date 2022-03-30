@@ -54,7 +54,7 @@ export default function ResultModal({ gameState, reset }: ResultModalProps) {
         {makeResult(gameState)}
         <Box sx={{ paddingTop: "20px" }}>
           <Button variant="contained" color="primary" onClick={reset}>
-            Reset
+            Play Again
           </Button>
         </Box>
       </Box>
