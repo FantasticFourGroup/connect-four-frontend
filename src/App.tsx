@@ -3,9 +3,10 @@ import { Button } from "@mui/material";
 import { Box } from "@mui/system";
 import Grid from "./Grid";
 import "./App.css";
-import { BackendResponse, GameStatus, Player } from "./Models";
+import { BackendResponse, Depth, GameStatus, Player } from "./Models";
 import ResultModal from "./ResultModal";
 import Spinner from "./Spiner";
+import DepthSelector from "./DepthSelector";
 
 function colNotFull(col: number, grid: Array<number[]>) {
   return grid[0][col] <= 0;
@@ -22,7 +23,7 @@ function makeGridValues(col: number, player: Player, grid: Array<number[]>) {
   return copy;
 }
 
-async function fetchBackEnd(grid: Array<number[]>) {
+async function fetchBackEnd(grid: Array<number[]>, depth: Depth) {
   return fetch(`https://connect-four-backend.onrender.com/solve-board`, {
     method: "POST", // or 'PUT'
     headers: {
@@ -30,7 +31,7 @@ async function fetchBackEnd(grid: Array<number[]>) {
     },
     body: JSON.stringify({
       grid: grid,
-      depth: 4,
+      depth: depth,
       turn: 2,
     }),
   }).then((response) => response.json());
@@ -51,10 +52,11 @@ function App() {
     aiHasMoved: true,
     state: "Playing",
     backendLoaded: false,
+    depth: 4,
   });
 
   useEffect(() => {
-    fetchBackEnd(emptyGrid).then(() => {
+    fetchBackEnd(emptyGrid, 4).then(() => {
       setGameStatus((perviousStatus) => ({
         ...perviousStatus,
         backendLoaded: true,
@@ -73,7 +75,7 @@ function App() {
       setGrid(newGrid);
       setGameStatus({ ...gameStatus, aiHasMoved: false });
 
-      fetchBackEnd(newGrid)
+      fetchBackEnd(newGrid, gameStatus.depth)
         .then((aiData: BackendResponse) => {
           if (aiData.game_state !== "Win") {
             setGrid(makeGridValues(aiData.choice, 2, newGrid));
@@ -114,17 +116,29 @@ function App() {
           paddingTop: "30px",
         }}
       >
+        <DepthSelector
+          value={gameStatus.depth}
+          onChange={(depth: Depth) => {
+            reset();
+            setGameStatus({ ...gameStatus, depth });
+          }}
+        />
         <Button variant="outlined" color="secondary" onClick={reset}>
           Reset
         </Button>
       </Box>
       <Box
         sx={{
+          paddingTop: "30px",
           display: "flex",
           justifyContent: "center",
         }}
       >
-        <Grid grid={grid} onClick={move} />
+        <Grid
+          grid={grid}
+          onClick={move}
+          progressCurser={!gameStatus.aiHasMoved}
+        />
       </Box>
     </Box>
   );

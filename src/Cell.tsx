@@ -8,6 +8,7 @@ interface CellProps {
   col: number;
   grid: Array<number[]>;
   onClick: (col: number) => void;
+  progressCurser: boolean;
 }
 
 const colors: { [key: number]: string } = {
@@ -16,8 +17,14 @@ const colors: { [key: number]: string } = {
   2: "red",
 };
 
-export default function Cell({ row, col, onClick, grid: values }: CellProps) {
-  const player = values[row][col];
+export default function Cell({
+  row,
+  col,
+  onClick,
+  grid,
+  progressCurser,
+}: CellProps) {
+  const player = grid[row][col];
   return (
     <TableCell
       align="center"
@@ -26,7 +33,11 @@ export default function Cell({ row, col, onClick, grid: values }: CellProps) {
         height: "70px",
         width: "70px",
         padding: "0px",
-        cursor: values[0][col] <= 0 ? "pointer" : "default",
+        cursor: progressCurser
+          ? "progress"
+          : grid[0][col] <= 0
+          ? "pointer"
+          : "default",
       }}
       onClick={() => {
         onClick(col);

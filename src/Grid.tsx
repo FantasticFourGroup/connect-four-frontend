@@ -8,7 +8,12 @@ import {
 } from "@mui/material";
 import Cell from "./Cell";
 
-function makeCellsRows(count: number, { grid: selected, onClick }: GridProps) {
+function makeCellsRows(
+  count: number,
+  grid: Array<number[]>,
+  onClick: (col: number) => void,
+  progressCurser: boolean
+) {
   return Array(count)
     .fill(undefined)
     .map((_, i) => (
@@ -21,8 +26,9 @@ function makeCellsRows(count: number, { grid: selected, onClick }: GridProps) {
                 col={j}
                 row={i}
                 onClick={onClick}
-                grid={selected}
+                grid={grid}
                 key={j + i}
+                progressCurser={progressCurser}
               />
             );
           })}
@@ -33,16 +39,22 @@ function makeCellsRows(count: number, { grid: selected, onClick }: GridProps) {
 interface GridProps {
   grid: Array<number[]>;
   onClick: (col: number) => void;
+  progressCurser: boolean;
 }
 
-export default function Grid({ grid, onClick }: GridProps) {
+export default function Grid({ grid, onClick, progressCurser }: GridProps) {
   return (
     <TableContainer
       component={Paper}
-      sx={{ padding: "30px", width: "60%", height: "60%" }}
+      sx={{
+        padding: "30px",
+        width: "60%",
+        height: "60%",
+        cursor: progressCurser ? "progress" : "pointer",
+      }}
     >
       <Table>
-        <TableBody>{makeCellsRows(6, { grid: grid, onClick })}</TableBody>
+        <TableBody>{makeCellsRows(6, grid, onClick, progressCurser)}</TableBody>
       </Table>
     </TableContainer>
   );
