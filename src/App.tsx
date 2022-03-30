@@ -81,6 +81,7 @@ function App() {
 
   return (
     <Box>
+      <h1 style={{textAlign: "center", fontFamily: 'Common Pixel', fontSize: 50}}>Connect Four</h1>
       <ResultModal gameState={gameStatus.state} reset={reset} />
       <Box
         sx={{
