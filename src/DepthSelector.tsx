@@ -26,10 +26,11 @@ export default function DepthSelector({ value, onChange }: DepthSelectorProps) {
           label="Depht"
           onChange={handleChange}
         >
-          <MenuItem value={4}>4</MenuItem>
-          <MenuItem value={5}>5</MenuItem>
-          <MenuItem value={6}>6</MenuItem>
-          <MenuItem value={7}>7</MenuItem>
+          {Array(8)
+            .fill(undefined)
+            .map((_, i) => (
+              <MenuItem value={i + 1}>{i + 1}</MenuItem>
+            ))}
         </Select>
       </FormControl>
     </Box>
