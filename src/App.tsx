@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@mui/material";
 import { Box } from "@mui/system";
-import Grid from "./Grid";
+import Grid from "./components/Grid";
 import "./App.css";
-import { BackendResponse, Depth, GameStatus, Player } from "./Models";
-import ResultModal from "./ResultModal";
-import Spinner from "./Spiner";
-import DepthSelector from "./DepthSelector";
+import { BackendResponse, Depth, GameStatus, Player } from "./types/Models";
+import ResultModal from "./components/ResultModal";
+import Spinner from "./components/Spiner";
+import DepthSelector from "./components/DepthSelector";
 
 function colNotFull(col: number, grid: Array<number[]>) {
   return grid[0][col] <= 0;

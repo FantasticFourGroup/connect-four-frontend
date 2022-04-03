@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Button, Modal, Typography } from "@mui/material";
-import { GameState } from "./Models";
-import { useState } from 'react';
+import { GameState } from "../types/Models";
+import { useState } from "react";
 
 interface ResultModalProps {
   gameState: GameState;
@@ -18,21 +18,29 @@ const style = {
   border: "2px solid #000",
   boxShadow: 24,
   p: 4,
-  textAlign: "center"
+  textAlign: "center",
 };
 
 const largePixel = {
   fontSize: 40,
   fontWeight: 900,
-  fontFamily: 'Common Pixel'
-}
+  fontFamily: "Common Pixel",
+};
 
 function makeResult(gameState: GameState) {
   switch (gameState) {
     case "Lose":
-      return <Typography sx={{ ...largePixel, color: "#ff3d00"  }}>You Lose</Typography>;
+      return (
+        <Typography sx={{ ...largePixel, color: "#ff3d00" }}>
+          You Lose
+        </Typography>
+      );
     case "Win":
-      return <Typography sx={{ ...largePixel, color: "#4caf50" }}>You WIN!!!</Typography>;
+      return (
+        <Typography sx={{ ...largePixel, color: "#4caf50" }}>
+          You WIN!!!
+        </Typography>
+      );
     default:
       return <Typography>It's a Draw</Typography>;
   }
