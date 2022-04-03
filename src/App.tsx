@@ -111,7 +111,7 @@ function App() {
       <Box
         sx={{
           display: "flex",
-          justifyContent: "right",
+          justifyContent: "center",
           paddingRight: "30px",
           paddingTop: "5px",
         }}
@@ -123,7 +123,12 @@ function App() {
             setGameStatus({ ...gameStatus, depth });
           }}
         />
-        <Button variant="outlined" color="secondary" onClick={reset}>
+        <Button
+          sx={{ marginLeft: "10px" }}
+          variant="outlined"
+          color="secondary"
+          onClick={reset}
+        >
           Reset
         </Button>
       </Box>
